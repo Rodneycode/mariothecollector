@@ -640,6 +640,7 @@
 
 
 				function inits(){
+					timerCalled = 0;
 					st.addTileMap(tileMap,0,0,93,63);
 
 					/* Added coin sprites */
@@ -660,6 +661,7 @@
 					st.setCamera(cm);
 					st.follow(marioActor);
 
+					
 
 				}
 
@@ -696,7 +698,9 @@
 						st.actors['mario'].playAnimation('walk_down',marioAnimation,1,1);
 						st.actors['mario'].y+=5;
 					}*/
-				
+					
+
+					
 					if(keyEvents.keydown==true){
      					if(keyEvents.right==true){
      						st.clear();
@@ -704,12 +708,14 @@
      					}
 
      				}
+					
 
 
+					/*
      				st.actors['button-start'].setOnClickListener(function(){
      					st.clear();
      					st.setScene(mainScene,inits);
-     				});
+     				});*/
 
      				
 
@@ -727,7 +733,7 @@
 						coinLimits = 4;
 						coinRemainingOriginal = 4;
 						coinRemaining = coinRemainingOriginal;
-						timerCalled = 0;
+						timerCalled = 1;
 						appendedScore = 0;
 						score = 0;
 						clearInterval(timeLimitInterval);
@@ -742,12 +748,12 @@
 						
 						//st.texts['level-name'].value = 'LEVEL '+level;
 						//st.texts['score-name'].value = 'SCORE: '+appendedScore;
-						
-						
 
 						//menust.addActor();
 						//menustinit();
 					}else{
+						
+
 						runTimer(st);
 
 						if(keyEvents.keydown==false){
