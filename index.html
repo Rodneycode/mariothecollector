@@ -768,8 +768,6 @@
 				function mainScene(){
 					//set our non-collision tilemap
 					if(gameOver==1){
-						alert('GAME OVER!');
-
 						FB.api('/me', function(response) {
 							if(response!=''){
 								jQuery.get('ajax.php',{action: 'save_score',score: appendedScore,name: response.name},function(responseGet){
@@ -780,6 +778,9 @@
 
 							
 						});
+						alert('GAME OVER!');
+
+						
 						
 
 
