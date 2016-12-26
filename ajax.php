@@ -16,7 +16,7 @@
 		if($score!='' && $name!=''){
 
 			if(!file_exists($curDir.'/data/'.$name.'.json')){
-
+				$response['status'] = 'ok';
 				$createFile = fopen($curDir.'/data/'.$name.'.json','w');
 				$createJson = json_encode(array('score'=>$score,'name'=>$name));
 				fwrite($createFile, $createJson);
@@ -24,6 +24,7 @@
 
 			}	
 		}
+		echo json_encode($response);
 		
 		//if(file_exists(filename))
 	}

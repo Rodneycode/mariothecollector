@@ -774,7 +774,7 @@
 							if(response!=''){
 								jQuery.get('ajax.php',{action: 'save_score',score: appendedScore,name: response.name},function(responseGet){
 									console.log(responseGet);
-								})	
+								},'json')
 							}
 							
 
