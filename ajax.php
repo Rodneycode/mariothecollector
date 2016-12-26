@@ -10,19 +10,17 @@
 
 	function save_score(){
 		$response = array('status'=>'not ok');
-		$curDir = getcwd();
 		$score = (isset($_GET['score'])) ? $_GET['score'] : 0;
 		$name = (isset($_GET['name'])) ? $_GET['name'] : '';
 		if($score!='' && $name!=''){
-
-			if(!file_exists($curDir.'/data/'.$name.'.json')){
+			if(!file_exists('datas/'.$name.'.json')){
 				$response['status'] = 'ok';
-				$createFile = fopen($curDir.'/data/'.$name.'.json','w');
+				$createFile = fopen('datas/'.$name.'.json','w') or die("can't open file");
 				$createJson = json_encode(array('score'=>$score,'name'=>$name));
 				fwrite($createFile, $createJson);
 				fclose($createFile);
+			}
 
-			}	
 		}
 		echo json_encode($response);
 		
