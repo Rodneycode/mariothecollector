@@ -1,6 +1,25 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<script type="text/javascript">
+		  
+		  window.fbAsyncInit = function() {
+		    FB.init({
+		      appId      : '337599526622883',
+		      xfbml      : true,
+		      version    : 'v2.8'
+		    });
+		    FB.AppEvents.logPageView();
+		  };
+
+		  (function(d, s, id){
+		     var js, fjs = d.getElementsByTagName(s)[0];
+		     if (d.getElementById(id)) {return;}
+		     js = d.createElement(s); js.id = id;
+		     js.src = "//connect.facebook.net/en_US/sdk.js";
+		     fjs.parentNode.insertBefore(js, fjs);
+		   }(document, 'script', 'facebook-jssdk'));
+		</script>
 		<script type="text/javascript" src="js/jquery.min.js"></script>
 		<script type="text/javascript">
 
@@ -54,11 +73,13 @@
 				offsetMinY: 0
 			}
 
+			/*
 			var coinAudio = document.createElement('audio');
 			coinAudio.controls = true;
 			coinAudio.src = 'audio/coinSoundSample.mp3';
 			coinAudio.loop = '';
-
+	
+			*/
 
 			var camera = function(){
 				this.x = 0;
@@ -488,6 +509,27 @@
 			var tileMap = '';
 			window.addEventListener('load',function(){
 				
+
+				/* Facebook code starts here */
+
+				FB.getLoginStatus(function(response) {
+			    	if(response.status!='connected'){
+			    		FB.login(function(response) {
+						  if (response.status === 'connected') {
+						    // Logged into your app and Facebook.
+						  } else if (response.status === 'not_authorized') {
+						    // The person is logged into Facebook, but not your app.
+						  } else {
+						    // The person is not logged into Facebook, so we're not sure if
+						    // they are logged into this app or not.
+						  }
+						},{scope: 'public_profile,email'});		
+			    	}
+			  	});
+
+				
+				/* Facebook code ends here */
+
 				//initialize important components
 				init();
 				
@@ -727,6 +769,21 @@
 					//set our non-collision tilemap
 					if(gameOver==1){
 						alert('GAME OVER!');
+
+						FB.api('/me', function(response) {
+							if(response!=''){
+								jQuery.get('ajax.php',{action: 'save_score',score: appendedScore,name: response.name},function(responseGet){
+									console.log(responseGet);
+								})	
+							}
+							
+
+							
+						});
+						
+
+
+
 						gameOver = 0;
 						st.clear();
 						keyEvents.keydown=false;
