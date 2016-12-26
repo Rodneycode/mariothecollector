@@ -5,8 +5,10 @@
 		<script type="text/javascript">
 
 			var c,ctx;
-			var cwidth = 1300;
+			var cwidth = 800;
 			var cheight = 600;
+			var coinRemainingOriginal = 4;
+			var coinRemaining = 0;
 			var coinLimits = 4;
 			var coinActors = [];
 			var level = 1;
@@ -598,7 +600,7 @@
 				var buttonStartActor = new actor();
 				buttonStartActor.init({
 					sprite: buttonStartSprite,
-					x: 350,
+					x: 150,
 					y: 100,
 					h: 136,
 					w: 637,
@@ -610,7 +612,7 @@
 				var buttonCreditActor = new actor();
 				buttonCreditActor.init({
 					sprite: buttonCreditSprite,
-					x: 350,
+					x: 150,
 					y: 260,
 					h: 136,
 					w: 637,
@@ -646,9 +648,13 @@
 					//add our main actor "Mario the Collector"
 					st.addActor(marioActor);
 
+
+					coinRemaining = coinRemainingOriginal;
+
 					st.addText({name: 'level-name',value: 'LEVEL 1',x: 10,y:20});
-					st.addText({name:'score-name',value: 'SCORE: 0',x:1160,y:20});
+					st.addText({name:'score-name',value: 'SCORE: 0',x:650,y:20});
 					st.addText({name:'timer-name',value: 'Time Remaining: '+timeLimit,x:10,y:60});
+					st.addText({name:'coinremaining-name',value: 'Coin Remaining: '+coinRemaining,x:10,y:100});
 					st.addText({name:'instruction-name',value: 'Controls: A-LEFT, W-UP, S-DOWN,D-RIGHT',x:10,y:580});
 					//st.addActor(chimneySecondActor);
 					st.setCamera(cm);
@@ -719,6 +725,8 @@
 						st.clear();
 						keyEvents.keydown=false;
 						coinLimits = 4;
+						coinRemainingOriginal = 4;
+						coinRemaining = coinRemainingOriginal;
 						timerCalled = 0;
 						appendedScore = 0;
 						score = 0;
@@ -726,10 +734,12 @@
 						timeLimitOriginal = 60;
 						timeLimit = timeLimitOriginal;
 						level = 1;
+
 						//st.setScene(mainScene,inits);
 						st.setScene(menuScene,initMenu);
 						st.actors['mario'].x = 100;
 						st.actors['mario'].y = 100; 
+						
 						//st.texts['level-name'].value = 'LEVEL '+level;
 						//st.texts['score-name'].value = 'SCORE: '+appendedScore;
 						
@@ -748,6 +758,9 @@
 								level++;
 								timerCalled = 0;
 								coinLimits++;
+								coinRemainingOriginal = coinLimits;
+								coinRemaining = coinRemainingOriginal;
+								st.texts['coinremaining-name'].value = 'Coin Remaining: ' + coinRemaining;
 								addCoinSprites();
 								clearInterval(timeLimitInterval);
 								//timeLimitOriginal-=5;
@@ -777,6 +790,8 @@
 		     						//coinAudio.play();
 		     						score++;
 		     						appendedScore++;
+		     						coinRemaining--;
+		     						st.texts['coinremaining-name'].value = 'Coin Remaining: ' + coinRemaining;
 		     						st.texts['score-name'].value = 'SCORE: '+appendedScore;
 		     						st.remove('coin-'+x);
 
@@ -919,7 +934,7 @@
 		<img id="chimney" src="images/chimney.png" height=100 width=100 style="display:none;" />
 		<img id="buttons" src="images/buttons.png" height=100 width=100 style="display:none;" />
 		<img id="coins" src="images/coinsprite.png" height=100 width=100 style="display:none;" />
-		<canvas id="main-screen" height=600 width=1300>
+		<canvas id="main-screen" height=600 width=800>
 		</canvas>
 	</body>
 </html>
