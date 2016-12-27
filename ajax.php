@@ -16,26 +16,35 @@
 			$response['status'] = 'ok';
 
 			if(file_exists('players.json')){
-				$readFile = fopen('players.json','w') or die("can't open file");
-				$contents = fread($readFile, filesize('players.json'));
 
+				$readFile = fopen('players.json','r+') or die("can't open file");
+				$contents = fread($readFile, filesize(getcwd().'/players.json'));
 				$players = json_decode($contents);
 				$hasMatch = 0;
+				$index = 0;
+
 				foreach ($players as $key => $value) {
-					if($value['name']==$name){
+					if($value->name==$name){
 						$hasMatch = 1;
-						$players[$key]['score'] = $score;
+						$players[$index]->score = $score;
 					}
 				}
 
 				if($hasMatch==0){
-					array_push($players,array('score'=>$score,'name'=>$name));
+					$tmp = new stdClass;
+					$tmp->score = $score;
+					$tmp->name = $name;
+					$players[] = $tmp;
+					//array_push($newPlayers,array('score'=>$score,'name'=>$name));
+				
 				}
-
 				$createJson = json_encode($players);
-				fwrite($readFile,$createJson);
 				fclose($readFile);
 
+				$readFile = fopen('players.json','w') or die("can't open file");
+				$contents = fread($readFile, filesize(getcwd().'/players.json'));
+				fwrite($readFile,$createJson);
+				fclose($readFile);
 			}else{
 				$createFile = fopen('players.json','w') or die("can't open file");
 				$createJson = json_encode(array(array('score'=>$score,'name'=>$name)));
