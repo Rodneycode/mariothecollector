@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript">
+		  
+		  window.fbAsyncInit = function() {
+		    FB.init({
+		      appId      : '337599526622883',
+		      xfbml      : true,
+		      version    : 'v2.8'
+		    });
+		    FB.AppEvents.logPageView();
+		  };
+
+		  (function(d, s, id){
+		     var js, fjs = d.getElementsByTagName(s)[0];
+		     if (d.getElementById(id)) {return;}
+		     js = d.createElement(s); js.id = id;
+		     js.src = "//connect.facebook.net/en_US/sdk.js";
+		     fjs.parentNode.insertBefore(js, fjs);
+		   }(document, 'script', 'facebook-jssdk'));
+
+
+		  window.addEventListener('load',function(){
+		  	FB.getLoginStatus(function(response) {
+		    	if(response.status!='connected'){
+		    		FB.login(function(response) {
+					  if (response.status === 'connected') {
+					    // Logged into your app and Facebook.
+					  } else if (response.status === 'not_authorized') {
+					    // The person is logged into Facebook, but not your app.
+					  } else {
+					    // The person is not logged into Facebook, so we're not sure if
+					    // they are logged into this app or not.
+					  }
+					},{scope: 'public_profile,email'});		
+		    	}
+		  	});
+
+
+
+		  	FB.api('/me', function(response) {
+				if(response!=''){
+					console.log(response);
+				}
+			});
+
+
+		  })
+
+		</script>
+
+
+	</head>
+	<body>
+
+	</body>
+</html>
