@@ -256,6 +256,13 @@
 						if(thisHere.texts!=[]){
 
 							for(var x in thisHere.texts){
+								//fillStyle: 'black'
+								
+								if(timeLimit<=10){
+									var fillStyle= (thisHere.texts[x].name=='timer-name') ? 'red' : 'black';	
+									ctx.fillStyle = fillStyle;
+								}
+								
 								ctx.fillText(thisHere.texts[x].value,thisHere.texts[x].x,thisHere.texts[x].y);		
 							}
 							
@@ -467,8 +474,11 @@
 					timerCalled = 1;
 					timeLimitInterval = setInterval(function(){
 						if(timeLimit!=0){
+							//stGet.texts['timer-name'].fillStyle = 'black';
 							timeLimit--;
-							stGet.texts['timer-name'].value = 'Time Remaining: '+timeLimit;	
+							//ctx.fillStyle = "black";
+							//stGet.texts['timer-name'].fillStyle = 'red';
+							stGet.texts['timer-name'].value = 'Time Remaining: '+timeLimit;
 						}else{
 							gameOver = 1;
 						}
@@ -707,9 +717,9 @@
 
 					coinRemaining = coinRemainingOriginal;
 
-					st.addText({name: 'level-name',value: 'LEVEL 1',x: 10,y:20});
-					st.addText({name:'score-name',value: 'SCORE: 0',x:650,y:20});
-					st.addText({name:'timer-name',value: 'Time Remaining: '+timeLimit,x:10,y:60});
+					st.addText({name: 'level-name',value: 'LEVEL 1',x: 10,y:20,fillStyle: 'black'});
+					st.addText({name:'score-name',value: 'SCORE: 0',x:650,y:20,fillStyle: 'black'});
+					st.addText({name:'timer-name',value: 'Time Remaining: '+timeLimit,x:10,y:60,fillStyle: 'black'});
 					st.addText({name:'coinremaining-name',value: 'Coin Remaining: '+coinRemaining,x:10,y:100});
 					st.addText({name:'instruction-name',value: 'Controls: A-LEFT, W-UP, S-DOWN,D-RIGHT',x:10,y:580});
 					//st.addActor(chimneySecondActor);
@@ -824,10 +834,6 @@
 						st.setScene(menuScene,initMenu);
 						st.actors['mario'].x = 100;
 						st.actors['mario'].y = 100;
-						
-						
-
-
 						alert('GAME OVER!');
 						 
 						
@@ -843,8 +849,6 @@
 
 						if(keyEvents.keydown==false){
 							st.actors['mario'].stopAnimation();
-							
-							
 
 						}
 
@@ -894,24 +898,42 @@
 
 	     					if(keyEvents.right==true){
 	     						st.actors['mario'].playAnimation('walk_right',marioAnimation,1,2.89);
-							    st.actors['mario'].x+=8;
+
+	     						if((st.actors['mario'].x+st.actors['mario'].w)<=World.sizex){
+	     							st.actors['mario'].x+=8;	
+	     						}
+							    
 	     					}
 
 	     					if(keyEvents.left==true){
 	     						
 	     						st.actors['mario'].playAnimation('walk_left',marioAnimation,5,1);
-							    st.actors['mario'].x-=8;
+							    if(st.actors['mario'].x>=0){
+	     							st.actors['mario'].x-=8;
+	     						}
 	     						
 	     					}
 
 	     					if(keyEvents.up==true){
 	     						st.actors['mario'].playAnimation('walk_up',marioAnimation,1,3.77);
-							    st.actors['mario'].y-=8;
+
+	     						if(st.actors['mario'].y>=0){
+	     							st.actors['mario'].y-=8;	
+	     						}
+
+
+							    
 	     					}
 
 	     					if(keyEvents.down==true){
+
 	     						st.actors['mario'].playAnimation('walk_down',marioAnimation,1,1);
-							    st.actors['mario'].y+=8;
+
+	     						if((st.actors['mario'].y+st.actors['mario'].h)<=(World.sizey-5)){
+		     						st.actors['mario'].y+=8;	
+	     						}
+
+							    
 	     					}
 
 						}
