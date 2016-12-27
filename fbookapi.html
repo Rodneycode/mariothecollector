@@ -19,7 +19,9 @@
 		     js.src = "//connect.facebook.net/en_US/sdk.js";
 		     fjs.parentNode.insertBefore(js, fjs);
 		   }(document, 'script', 'facebook-jssdk'));
+		</script>
 
+		<script type="text/javascript">
 
 		  window.addEventListener('load',function(){
 		  	FB.getLoginStatus(function(response) {
@@ -27,11 +29,6 @@
 		    		FB.login(function(response) {
 					  if (response.status === 'connected') {
 					    // Logged into your app and Facebook.
-
-
-					   
-
-
 
 					  } else if (response.status === 'not_authorized') {
 					    // The person is logged into Facebook, but not your app.
@@ -43,16 +40,13 @@
 		    	}
 		  	});
 
+		  	FB.api('/me', function(response) {
+				if(response!=''){
+					console.log(response);
+				}
+			});
 
-		  	 FB.api('/me', function(response) {
-							if(response!=''){
-								console.log(response);
-							}
-						});
-		  	
-
-
-		  })
+		  });
 
 		</script>
 
