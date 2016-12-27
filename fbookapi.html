@@ -29,11 +29,7 @@
 					    // Logged into your app and Facebook.
 
 
-					    FB.api('/me', function(response) {
-							if(response!=''){
-								console.log(response);
-							}
-						});
+					   
 
 
 
@@ -48,7 +44,11 @@
 		  	});
 
 
-
+		  	 FB.api('/me', function(response) {
+							if(response!=''){
+								console.log(response);
+							}
+						});
 		  	
 
 
