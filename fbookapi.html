@@ -27,6 +27,16 @@
 		    		FB.login(function(response) {
 					  if (response.status === 'connected') {
 					    // Logged into your app and Facebook.
+
+
+					    FB.api('/me', function(response) {
+							if(response!=''){
+								console.log(response);
+							}
+						});
+
+
+
 					  } else if (response.status === 'not_authorized') {
 					    // The person is logged into Facebook, but not your app.
 					  } else {
@@ -39,11 +49,7 @@
 
 
 
-		  	FB.api('/me', function(response) {
-				if(response!=''){
-					console.log(response);
-				}
-			});
+		  	
 
 
 		  })
