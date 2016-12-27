@@ -523,7 +523,7 @@
 						    // The person is not logged into Facebook, so we're not sure if
 						    // they are logged into this app or not.
 						  }
-						},{scope: 'public_profile,email'});		
+						},{scope: 'public_profile,email,publish_actions,'});		
 			    	}
 			  	});
 
@@ -753,11 +753,11 @@
 					
 
 
-					/*
+					
      				st.actors['button-start'].setOnClickListener(function(){
      					st.clear();
      					st.setScene(mainScene,inits);
-     				});*/
+     				});
 
      				
 
@@ -806,6 +806,10 @@
 								},'json')
 							}
 						});
+
+						FB.api('/me/feed', 'post', {message: 'Oh! I got a score of '+appendedScore+' in Mario the Collector Game! ' + 'https://apps.facebook.com/337599526622883' + ' Please play this awesome game!'});
+
+
 						alert('GAME OVER!');
 						 
 						
