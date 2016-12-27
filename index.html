@@ -511,7 +511,7 @@
 				
 
 				/* Facebook code starts here */
-
+				
 				FB.getLoginStatus(function(response) {
 			    	if(response.status!='connected'){
 			    		FB.login(function(response) {
@@ -768,26 +768,21 @@
 				function mainScene(){
 					//set our non-collision tilemap
 					if(gameOver==1){
-						FB.api('/me', function(response) {
-							if(response!=''){
-								jQuery.get('ajax.php',{action: 'save_score',score: appendedScore,name: response.name},function(responseGet){
-									console.log(responseGet);
-								},'json')
-							}
-							
-
-							
-						});
-						alert('GAME OVER!');
-
-						
-						
-
-
-
+						jQuery.get('ajax.php',{action: 'save_score',score: appendedScore,name: 'kenneth'},function(responseGet){
+							console.log(responseGet);
+						},'json');
+						keyEvents.keydown=false;
+						keyEvents.left = false;
+						keyEvents.right = false;
+						keyEvents.up = false;
+						keyEvents.down = false;
+						keyEvents.leftlast = false;
+						keyEvents.rightlast = false;
+						keyEvents.uplast = false;
+						keyEvents.downlast = false;
 						gameOver = 0;
 						st.clear();
-						keyEvents.keydown=false;
+						
 						coinLimits = 4;
 						coinRemainingOriginal = 4;
 						coinRemaining = coinRemainingOriginal;
@@ -802,7 +797,17 @@
 						//st.setScene(mainScene,inits);
 						st.setScene(menuScene,initMenu);
 						st.actors['mario'].x = 100;
-						st.actors['mario'].y = 100; 
+						st.actors['mario'].y = 100;
+						
+						FB.api('/me', function(response) {
+							if(response!=''){
+								jQuery.get('ajax.php',{action: 'save_score',score: appendedScore,name: response.name},function(responseGet){
+									console.log(responseGet);
+								},'json')
+							}
+						});
+						alert('GAME OVER!');
+						 
 						
 						//st.texts['level-name'].value = 'LEVEL '+level;
 						//st.texts['score-name'].value = 'SCORE: '+appendedScore;
@@ -817,6 +822,23 @@
 						if(keyEvents.keydown==false){
 							st.actors['mario'].stopAnimation();
 							
+							
+
+						}
+
+						if(firstTime==0){
+							keyEvents.keydown = true;
+							st.actors['mario'].playAnimation('walk_right',marioAnimation,1,2.89);
+							st.actors['mario'].x+=5;
+							firstTime = 1;
+							keyEvents.keydown = false;
+						}
+
+						//Math.floor((Math.random() * (World.sizex)) + 1)
+						
+						
+						if(keyEvents.keydown==true){
+
 							if(score==coinLimits){
 								score = 0;
 								level++;
@@ -833,21 +855,6 @@
 								mainScene();
 
 							}
-
-						}
-
-						if(firstTime==0){
-							keyEvents.keydown = true;
-							st.actors['mario'].playAnimation('walk_right',marioAnimation,1,2.89);
-							st.actors['mario'].x+=5;
-							firstTime = 1;
-							keyEvents.keydown = false;
-						}
-
-						//Math.floor((Math.random() * (World.sizex)) + 1)
-						
-						
-						if(keyEvents.keydown==true){
 
 							for(var x=0;x<coinActors.length;x++){
 		     					if(st.actors['coin-'+x] && st.actors['mario'].collide(st.actors['coin-'+x])){
