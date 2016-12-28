@@ -24,7 +24,9 @@
 		<script type="text/javascript">
 
 			var c,ctx;
-			var cwidth = 800;
+			var runMarioBotTrigger = 0;
+			var cointt = 1;
+			var cwidth = 900;
 			var cheight = 600;
 			var coinRemainingOriginal = 4;
 			var coinRemaining = 0;
@@ -58,7 +60,7 @@
 				ctx = c.getContext('2d');
 				ctx.textBaseline = "middle";
 		        ctx.font = "400 24px arial";
-		        ctx.fillStyle = "black";
+		        ctx.fillStyle = "white";
 			}
 
 			var World = {
@@ -99,8 +101,10 @@
 				this.t = '';
 				this.texts = [];
 				this.scene = '';
+				this.sInterval = 0;
 				this.inits = '';
-
+				this.switchx = 0;
+				this.switchy = 1;
 				this.setScene = function(sceneGet,initsGet){
 					this.scene = sceneGet;
 					initsGet();
@@ -117,7 +121,7 @@
 				this.clear = function(){
 
 					//clear all drawings to free memory
-					ctx.clearRect(0,0,cwidth,cheight);
+					//ctx.clearRect(0,0,cwidth,cheight);
 					
 					if(this.actors!=[]){
 						for(var x in this.actors){
@@ -211,9 +215,11 @@
 
 					this.t =setInterval(function(){
 
+						
 						//clear all drawings to free memory
+						
 						ctx.clearRect(0,0,cwidth,cheight);
-
+						
 						for(var x in thisHere.actors){
 							//console.log(x);
 							if(thisHere.camera!=''){
@@ -246,22 +252,26 @@
 							}
 
 							if(thisHere.actors[x].stay==1){
+
 								ctx.drawImage(thisHere.actors[x].sprite.resource,thisHere.actors[x].sprite.srcx,thisHere.actors[x].sprite.srcy,thisHere.actors[x].sprite.w,thisHere.actors[x].sprite.h,thisHere.actors[x].x,thisHere.actors[x].y,thisHere.actors[x].w,thisHere.actors[x].h);
 
 							}else{
 								ctx.drawImage(thisHere.actors[x].sprite.resource,thisHere.actors[x].sprite.srcx,thisHere.actors[x].sprite.srcy,thisHere.actors[x].sprite.w,thisHere.actors[x].sprite.h,thisHere.translateX,thisHere.translateY,thisHere.actors[x].w,thisHere.actors[x].h);	
+									
 							}
 							
 						}
 						if(thisHere.texts!=[]){
 
 							for(var x in thisHere.texts){
-								//fillStyle: 'black'
+								//fillStyle: 'white'
 								
 								if(timeLimit<=10){
-									var fillStyle= (thisHere.texts[x].name=='timer-name') ? 'red' : 'black';	
+									var fillStyle= (thisHere.texts[x].name=='timer-name') ? 'red' : 'white';						
 									ctx.fillStyle = fillStyle;
 								}
+
+								ctx.font = (thisHere.texts[x].font) ? thisHere.texts[x].font : "400 24px arial";
 								
 								ctx.fillText(thisHere.texts[x].value,thisHere.texts[x].x,thisHere.texts[x].y);		
 							}
@@ -297,17 +307,30 @@
 				this.y = 0;
 				this.h =  100;
 				this.w = 100;
+				this.tt = 0;
 				this.sprite = '';
 				this.animationX = 0;
 				this.staticFrameX = 0;
 				this.staticFrameY = 0;
 				this.name = '';
-				
-				this.setOnClickListener = function(cb){
+				this.setOnClickListener = function(cb,minusx,minusy){
+					
+					if(keyEvents.mousedown==true){
+						
+						var translateX = keyEvents.screenx-minusx;
+						var translateY = keyEvents.screeny-minusy;
 
-					if(keyEvents.screenx>=this.x && keyEvents.screenx<=(this.x+this.w) && keyEvents.screeny>=this.y && keyEvents.screeny<=(this.y+this.h)){
-						cb();	
+
+						if(translateX>=this.x && translateX<=(this.x+this.w) && translateY>=this.y && translateY<=(this.y+this.h)){
+							cb();
+						}
+						/*
+						if((keyEvents.screenx-8)>=this.x && (keyEvents.screenx-8)<=(this.x+this.w) && (keyEvents.screeny-8)>=this.y && (keyEvents.screeny-8)<=(this.y+this.h)){
+							cb();
+							
+						}*/	
 					}
+					
 				}
 
 
@@ -330,6 +353,7 @@
 					this.staticFrameY = staticFrameGetY;
 					this.sprite.srcy = (this.staticFrameY - 1) * this.h;
 					if(this.animationX<animationResource[action].length){
+
 						this.sprite.srcx = (animationResource[action][this.animationX] - 1) * this.w;
 
 						this.animationX++;
@@ -405,14 +429,20 @@
 				var coinStartY = Math.floor((Math.random() * (World.sizey)) + 1);
 
 
-				if(coinStartX>=World.sizex){
+				if((coinStartX+44)>World.sizex){
 					coinStartX-=44;
 				}
+				if(coinStartX<0){
+					coinStartX+=44;
+				}
 				
-				if(coinStartY>=World.sizey){
+				if((coinStartY+41)>World.sizey){
 					coinStartY-=41;
 				}
 
+				if(coinStartY<0){
+					coinStartY+=41;
+				}
 
 				var coinUsedX = [];
 				var coinUsedY = [];
@@ -426,12 +456,19 @@
 							coinStartX = Math.floor((Math.random() * (World.sizex)) + 1);
 							coinStartY = Math.floor((Math.random() * (World.sizey)) + 1);
 
-							if(coinStartX>=World.sizex){
+							if((coinStartX+44)>World.sizex){
 								coinStartX-=44;
 							}
+							if(coinStartX<0){
+								coinStartX+=44;
+							}
 							
-							if(coinStartY>=World.sizey){
+							if((coinStartY+41)>World.sizey){
 								coinStartY-=41;
+							}
+
+							if(coinStartY<0){
+								coinStartY+=41;
 							}
 							repeat();
 						}else{
@@ -454,12 +491,19 @@
 							coinStartX = Math.floor((Math.random() * (World.sizex)) + 1);
 							coinStartY = Math.floor((Math.random() * (World.sizey)) + 1);
 
-							if(coinStartX>=World.sizex){
+							if((coinStartX+44)>World.sizex){
 								coinStartX-=44;
 							}
+							if(coinStartX<0){
+								coinStartX+=44;
+							}
 							
-							if(coinStartY>=World.sizey){
+							if((coinStartY+41)>World.sizey){
 								coinStartY-=41;
+							}
+
+							if(coinStartY<0){
+								coinStartY+=41;
 							}
 
 						}
@@ -474,11 +518,11 @@
 					timerCalled = 1;
 					timeLimitInterval = setInterval(function(){
 						if(timeLimit!=0){
-							//stGet.texts['timer-name'].fillStyle = 'black';
+							//stGet.texts['timer-name'].fillStyle = 'white';
 							timeLimit--;
-							//ctx.fillStyle = "black";
+							//ctx.fillStyle = "white";
 							//stGet.texts['timer-name'].fillStyle = 'red';
-							stGet.texts['timer-name'].value = 'Time Remaining: '+timeLimit;
+							stGet.texts['timer-name'].value = timeLimit;
 						}else{
 							gameOver = 1;
 						}
@@ -515,6 +559,7 @@
 			var menust = new stage();
 			var chimneySprite = new sprite();
 			var marioSprite = new sprite();
+			var marioIconSprite = new sprite();
 			var coinSprites = [];
 			var tileMap = '';
 			window.addEventListener('load',function(){
@@ -549,7 +594,6 @@
 			    		 });
 			    	}
 			  	});
-
 				
 				/* Facebook code ends here */
 
@@ -597,6 +641,18 @@
 					h: 152,
 					w: 143
 				});
+
+				marioIconSprite.init({
+					resource: document.getElementById('marioIcon'),
+					srcx: 0,
+					srcy: 0,
+					destx: 0,
+					desty: 0,
+					h: 256,
+					w: 256
+				});
+
+
 				marioSprite.init({
 					resource: document.getElementById('mario'),
 					srcx: 0,
@@ -605,6 +661,17 @@
 					desty: 0,
 					h: 44,
 					w: 28
+				});
+
+				var marioIconActor = new actor();
+				marioIconActor.init({
+					sprite: marioIconSprite,
+					x: 320,
+					y: 20,
+					h: 256,
+					w: 256,
+					stay: 1,
+					name: 'mario-icon'
 				});
 
 				var marioActor = new actor();
@@ -640,6 +707,9 @@
 
 				var buttonStartSprite = new sprite();
 				var buttonCreditSprite = new sprite();
+				var buttonShareSprite = new sprite();
+				var buttonBackSprite = new sprite();
+
 
 				buttonStartSprite.init({
 					resource: document.getElementById('buttons'),
@@ -651,6 +721,17 @@
 					w: 637
 				});
 				
+				buttonBackSprite.init({
+					resource: document.getElementById('buttons'),
+					srcx: 1937,
+					srcy: 0,
+					destx: 0,
+					desty: 0,
+					h: 136,
+					w: 637
+				});
+
+
 				buttonCreditSprite.init({
 					resource: document.getElementById('buttons'),
 					srcx: 637,
@@ -661,12 +742,45 @@
 					w: 637
 				});
 
+				buttonShareSprite.init({
+					resource: document.getElementById('buttons'),
+					srcx: 1275,
+					srcy: 0,
+					destx: 0,
+					desty: 0,
+					h: 136,
+					w: 637
+				});
+
+				var buttonBackActor = new actor();
+				buttonBackActor.init({
+					sprite: buttonBackSprite,
+					x: 150,
+					y: 400,
+					h: 136,
+					w: 637,
+					stay: 1,
+					name: 'button-back'
+				});
+
+
+				var buttonShareActor = new actor();
+				buttonShareActor.init({
+					sprite: buttonShareSprite,
+					x: 150,
+					y: 250,
+					h: 136,
+					w: 637,
+					stay: 1,
+					name: 'button-share'
+				});
+
 
 				var buttonStartActor = new actor();
 				buttonStartActor.init({
 					sprite: buttonStartSprite,
 					x: 150,
-					y: 100,
+					y: 280,
 					h: 136,
 					w: 637,
 					stay: 1,
@@ -678,7 +792,7 @@
 				buttonCreditActor.init({
 					sprite: buttonCreditSprite,
 					x: 150,
-					y: 260,
+					y: 430,
 					h: 136,
 					w: 637,
 					stay: 1,
@@ -697,7 +811,11 @@
 					st.addActor(marioActor);
 					st.addActor(buttonStartActor);
 					st.addActor(buttonCreditActor);
+					st.addActor(marioIconActor);
 					st.setCamera(cm);
+					st.actors['mario'].tt = 1;
+					st.actors['mario'].y = 400;
+					st.actors['mario'].x = 400;
 					st.follow(marioActor);
 					st.addText({name:'instruction-name',value: 'Controls: A-LEFT, W-UP, S-DOWN,D-RIGHT',x:10,y:580});
 
@@ -707,19 +825,26 @@
 				function inits(){
 					timerCalled = 0;
 					st.addTileMap(tileMap,0,0,93,63);
-
+					
 					/* Added coin sprites */
 					addCoinSprites();
 
 					//add our main actor "Mario the Collector"
 					st.addActor(marioActor);
 
+					st.actors['mario'].y = 100;
+					st.actors['mario'].x = 100;
+
 
 					coinRemaining = coinRemainingOriginal;
 
-					st.addText({name: 'level-name',value: 'LEVEL 1',x: 10,y:20,fillStyle: 'black'});
-					st.addText({name:'score-name',value: 'SCORE: 0',x:650,y:20,fillStyle: 'black'});
-					st.addText({name:'timer-name',value: 'Time Remaining: '+timeLimit,x:10,y:60,fillStyle: 'black'});
+					st.addText({name: 'level-name',value: 'LEVEL 1',x: 10,y:20,fillStyle: 'white'});
+					st.addText({name:'score-name',value: 'SCORE: 0',x:650,y:20,fillStyle: 'white'});
+
+					st.addText({name: 'timer-name-title',value: 'Time Remaining: ',x:10,y:60,fillStyle: 'white'});
+
+					st.addText({name:'timer-name',value: timeLimit,x:200,y:60,fillStyle: 'white'});
+
 					st.addText({name:'coinremaining-name',value: 'Coin Remaining: '+coinRemaining,x:10,y:100});
 					st.addText({name:'instruction-name',value: 'Controls: A-LEFT, W-UP, S-DOWN,D-RIGHT',x:10,y:580});
 					//st.addActor(chimneySecondActor);
@@ -731,12 +856,118 @@
 				}
 
 				var intervalLimit = 0;
+
+
+
+				function initGameOver(){
+		       		st.addTileMap(tileMap,0,0,93,63);
+					/* Added coin sprites */
+					//addCoinSprites();
+					st.addText({name: 'game-over-name',value: 'GAME OVER',x: 100,y:100,fillStyle: 'white',font: '400 100px Segoe Print'});
+					st.addText({name: 'game-over-score-name',value: 'Your score: ' +appendedScore,x:120,y:200,fillStyle: 'white'});
+					st.addActor(buttonShareActor);
+					st.addActor(buttonBackActor);
+					appendedScore = 0;
+				}
+
+				function shareFacebookScore(){
+					FB.ui(
+					 {
+					  method: 'share',
+					  href: 'https://apps.facebook.com/337599526622883'
+					}, function(response){});
+				}
+
+				function runMarioBot(){
+
+					if(runMarioBotTrigger==0){
+						var direction = ['','up','down','left','right'];
+						var duration = [1000,1000,2000,3000,4000];
+						var whatDirection,whatDuration;
+						whatDirection = Math.floor((Math.random() * (direction.length)) + 1);
+						whatDuration = Math.floor((Math.random() * (duration.length)) + 1);
+						var counter = 0;
+
+						var t = setInterval(function(){
+							if(runMarioBotTrigger==0){
+								if(counter==0){
+									if(direction[whatDirection]=='up'){
+
+										st.actors['mario'].playAnimation('walk_up',marioAnimation,1,3.77);
+										if(st.actors['mario'].y>=0){
+				     						st.actors['mario'].y-=5;	
+				     					}
+									}else if(direction[whatDirection]=='left'){
+										st.actors['mario'].playAnimation('walk_left',marioAnimation,5,1);
+										if(st.actors['mario'].x>=0){
+				     						st.actors['mario'].x-=5;	
+				     					}
+										
+									}else if(direction[whatDirection]=='right'){
+										st.actors['mario'].playAnimation('walk_right',marioAnimation,1,2.89);
+
+										if((st.actors['mario'].x+st.actors['mario'].w)<=World.sizex){
+				     						st.actors['mario'].x+=5;	
+				     					}
+										
+									}else if(direction[whatDirection]=='down'){
+										st.actors['mario'].playAnimation('walk_down',marioAnimation,1,1);
+
+										if((st.actors['mario'].y+st.actors['mario'].h)<=World.sizey){
+				     						st.actors['mario'].y+=5;	
+				     					}
+									}
+								}else{
+									runMarioBot();
+									clearInterval(t);
+
+								}	
+							}else{
+								clearInterval(t);
+							}
+							
+						},100);
+
+						setTimeout(function(){
+							counter = 1;
+						},duration[whatDuration]);	
+					}else{
+						clearInterval(t);
+					}
+					
+
+
+
+
+				}
+
+
+				function gameOverScene(){
+					st.actors['button-share'].setOnClickListener(function(){
+     					//shareFacebookScore();
+     					//alert('SHARE....');
+     				},8,75);
+
+     				st.actors['button-back'].setOnClickListener(function(){
+     					st.clear();
+     					st.setScene(menuScene,initMenu);
+     					//shareFacebookScore();
+     					//alert('SHARE....');
+     				},8,75);
+				}
 				function menuScene(){
 					
-					for(var x=0;x<coinActors.length;x++){
-						if(st.actors['coin-'+x])
-							st.actors['coin-'+x].playAnimation('normal',coinAnimation,1,1);
+					if(cointt%1==0){
+						cointt = 1;
+						for(var x=0;x<coinActors.length;x++){
+							if(st.actors['coin-'+x])
+								st.actors['coin-'+x].playAnimation('normal',coinAnimation,1,1);
+						}
+					}else{
+						cointt++;
 					}
+					
+
 
 
 					/*
@@ -766,23 +997,46 @@
 					
 
 					
+					/*
 					if(keyEvents.keydown==true){
      					if(keyEvents.right==true){
      						st.clear();
      						st.setScene(mainScene,inits);
      					}
 
-     				}
-					
+     				}*/
 
-
-					
      				st.actors['button-start'].setOnClickListener(function(){
+     					//console.log(kb);
      					st.clear();
-     					st.setScene(mainScene,inits);
-     				});
+     					cointt = 1;
+     					runMarioBotTrigger = 1;
+     					keyEvents.down = false;
+     					keyEvents.up = false;
+     					keyEvents.left = false;
+     					keyEvents.right = false;
+     					keyEvents.keydown = false;
+						keyEvents.rightlast = false;
+						keyEvents.leftlast = false;
+						keyEvents.uplast = false;
+						keyEvents.downlast = false;
 
-     				
+
+						//addCoinSprites();
+
+     					st.setScene(mainScene,inits);
+     					
+     				},8,75);
+
+
+
+     				for(var x=0;x<coinActors.length;x++){
+     					if(st.actors['coin-'+x] && st.actors['mario'].collide(st.actors['coin-'+x])){
+     						//coinAudio.play();
+     						st.remove('coin-'+x);
+
+     					}	
+ 					}
 
 
 				}
@@ -791,9 +1045,15 @@
 				function mainScene(){
 					//set our non-collision tilemap
 					if(gameOver==1){
+
+						/*
 						jQuery.get('ajax.php',{action: 'save_score',score: appendedScore,name: 'kenneth'},function(responseGet){
 							console.log(responseGet);
-						},'json');
+						},'json');*/
+						gameOver = 0;
+						keyEvents.keydown = false;
+						firstTime = 1;
+						/*
 						keyEvents.keydown=false;
 						keyEvents.left = false;
 						keyEvents.right = false;
@@ -803,51 +1063,52 @@
 						keyEvents.rightlast = false;
 						keyEvents.uplast = false;
 						keyEvents.downlast = false;
-						gameOver = 0;
+						gameOver = 0;*/
 						st.clear();
 						
+						
 
+						/*
 						FB.api('/me', function(response) {
 							if(response!=''){
 								jQuery.get('ajax.php',{action: 'save_score',score: appendedScore,name: response.id},function(responseGet){
 									console.log(responseGet);
 								},'json')
 							}
-						});
+						});*/
 
 						FB.api('/me/feed', 'post', {message: 'Oh! I got a score of '+appendedScore+' in Mario the Collector Game! https://apps.facebook.com/337599526622883' + ' Please play this awesome game!'});
-
-
 
 						coinLimits = 4;
 						coinRemainingOriginal = 4;
 						coinRemaining = coinRemainingOriginal;
 						timerCalled = 1;
-						appendedScore = 0;
+						//appendedScore = 0;
 						score = 0;
 						clearInterval(timeLimitInterval);
 						timeLimitOriginal = 60;
 						timeLimit = timeLimitOriginal;
 						level = 1;
-
+						
 						//st.setScene(mainScene,inits);
+						/*
 						st.setScene(menuScene,initMenu);
 						st.actors['mario'].x = 100;
 						st.actors['mario'].y = 100;
-						alert('GAME OVER!');
-						 
+						st.actors['mario'].tt = 1;
+						*/
+						runMarioBotTrigger = 0;
+						st.setScene(gameOverScene,initGameOver);
+						runMarioBot();
+						cointt = 1;
 						
-						//st.texts['level-name'].value = 'LEVEL '+level;
-						//st.texts['score-name'].value = 'SCORE: '+appendedScore;
-
-						//menust.addActor();
-						//menustinit();
 					}else{
 						
 
 						runTimer(st);
 
 						if(keyEvents.keydown==false){
+							st.actors['mario'].tt = 1;
 							st.actors['mario'].stopAnimation();
 
 						}
@@ -862,9 +1123,9 @@
 
 						//Math.floor((Math.random() * (World.sizex)) + 1)
 						
-						
-						if(keyEvents.keydown==true){
 
+						if(keyEvents.keydown==true){
+							//
 							if(score==coinLimits){
 								score = 0;
 								level++;
@@ -897,62 +1158,94 @@
 	     					
 
 	     					if(keyEvents.right==true){
-	     						st.actors['mario'].playAnimation('walk_right',marioAnimation,1,2.89);
+	     						if(st.actors['mario'].tt%1==0){
+	     							st.actors['mario'].tt = 1;
+		     						st.actors['mario'].playAnimation('walk_right',marioAnimation,1,2.89);
 
-	     						if((st.actors['mario'].x+st.actors['mario'].w)<=World.sizex){
-	     							st.actors['mario'].x+=8;	
-	     						}
-							    
+		     						if((st.actors['mario'].x+st.actors['mario'].w)<=World.sizex){
+		     							st.actors['mario'].x+=8;	
+		     						}
+	     						}else{
+	     							st.actors['mario'].tt++;
+	     							
+							    }
 	     					}
 
 	     					if(keyEvents.left==true){
 	     						
-	     						st.actors['mario'].playAnimation('walk_left',marioAnimation,5,1);
-							    if(st.actors['mario'].x>=0){
-	     							st.actors['mario'].x-=8;
+	     						if(st.actors['mario'].tt%1==0){
+	     							st.actors['mario'].tt=1;
+	     							st.actors['mario'].playAnimation('walk_left',marioAnimation,5,1);
+								    if(st.actors['mario'].x>=0){
+		     							st.actors['mario'].x-=8;
+		     						}
+	     						}else{
+	     							st.actors['mario'].tt++;
+	     								
 	     						}
+	     						
 	     						
 	     					}
 
 	     					if(keyEvents.up==true){
-	     						st.actors['mario'].playAnimation('walk_up',marioAnimation,1,3.77);
+	     						if(st.actors['mario'].tt%1==0){
+	     							st.actors['mario'].tt = 1;
+		     						st.actors['mario'].playAnimation('walk_up',marioAnimation,1,3.77);
 
-	     						if(st.actors['mario'].y>=0){
-	     							st.actors['mario'].y-=8;	
+		     						if(st.actors['mario'].y>=0){
+		     							st.actors['mario'].y-=8;	
+		     						}
+	     						}else{
+	     							st.actors['mario'].tt++;
+	     							
+
 	     						}
-
-
 							    
 	     					}
 
 	     					if(keyEvents.down==true){
+	     						if(st.actors['mario'].tt%1==0){
+	     							st.actors['mario'].tt = 1;
+	     							st.actors['mario'].playAnimation('walk_down',marioAnimation,1,1);
 
-	     						st.actors['mario'].playAnimation('walk_down',marioAnimation,1,1);
-
-	     						if((st.actors['mario'].y+st.actors['mario'].h)<=(World.sizey-5)){
-		     						st.actors['mario'].y+=8;	
+		     						if((st.actors['mario'].y+st.actors['mario'].h)<=(World.sizey-5)){
+			     						st.actors['mario'].y+=8;	
+		     						}
+	     						}else{
+	     							st.actors['mario'].tt++;
+		     						
 	     						}
 
 							    
 	     					}
+						
 
 						}
-						for(var x=0;x<coinActors.length;x++){
-							if(st.actors['coin-'+x])
-								st.actors['coin-'+x].playAnimation('normal',coinAnimation,1,1);
+						if(cointt%1==0){
+							cointt=1;
+							for(var x=0;x<coinActors.length;x++){
+								if(st.actors['coin-'+x])
+									st.actors['coin-'+x].playAnimation('normal',coinAnimation,1,1);
+							}
+						}else{
+							cointt++;
+							
 						}
+						
+						
 					}
 
 					
 				}
 
-
 				c.tabIndex = 0;
      			c.style.outline = 0;
-
-
      			c.addEventListener('mousedown',function(e){
      				keyEvents.mousedown = true;
+     				keyEvents.screenx = e.screenX;
+     				keyEvents.screeny = e.screenY;
+
+     			
      			});
 
      			c.addEventListener('mouseup',function(e){
@@ -1005,6 +1298,7 @@
 					keyEvents.leftlast = false;
 					keyEvents.uplast = false;
 					keyEvents.downlast = false;
+
 					switch(e.keyCode) {
 					    case 68:
 					    	//right
@@ -1036,6 +1330,11 @@
 				var firstTime = 0;
 				st.setScene(menuScene,initMenu);
 
+
+				//assuming mario is already initialized.
+				runMarioBot();
+
+
 			});
 
 
@@ -1043,13 +1342,13 @@
 	</head>
 	<body>
 		<img id="mario" src="images/mario2.png" height=100 width=100 style="display:none;" />
-
 		<img id="tileMap" src="images/map_sprites.png" height=100 width=100 style="display:none;" />
 
 		<img id="chimney" src="images/chimney.png" height=100 width=100 style="display:none;" />
 		<img id="buttons" src="images/buttons.png" height=100 width=100 style="display:none;" />
+		<img id="marioIcon" src="images/mario-icon.png" height=100 width=100 style="display:none;" />
 		<img id="coins" src="images/coinsprite.png" height=100 width=100 style="display:none;" />
-		<canvas id="main-screen" height=600 width=800>
+		<canvas id="main-screen" height=600 width=900>
 		</canvas>
 	</body>
 </html>
