@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<meta property="og:image" content="https://mariothecollector.herokuapp.com/images/mario-icon.png" />
 		<script type="text/javascript">
 		  
 		  window.fbAsyncInit = function() {
@@ -270,11 +271,11 @@
 							}
 
 							if(thisHere.actors[x].stay==1){
-								ctx.drawImage(thisHere.actors[x].sprite.resource,thisHere.actors[x].sprite.srcx,thisHere.actors[x].sprite.srcy,thisHere.actors[x].sprite.w,thisHere.actors[x].sprite.h,thisHere.actors[x].x,thisHere.actors[x].y,thisHere.actors[x].w,thisHere.actors[x].h);
+								ctx.drawImage(thisHere.actors[x].sprite.resource,thisHere.actors[x].sprite.srcx,thisHere.actors[x].sprite.srcy,thisHere.actors[x].sprite.w,thisHere.actors[x].sprite.h,thisHere.actors[x].x,thisHere.actors[x].y,thisHere.actors[x].sprite.w,thisHere.actors[x].sprite.h);
 
 							}else{
 
-								ctx.drawImage(thisHere.actors[x].sprite.resource,thisHere.actors[x].sprite.srcx,thisHere.actors[x].sprite.srcy,thisHere.actors[x].sprite.w,thisHere.actors[x].sprite.h,thisHere.translateX,thisHere.translateY,thisHere.actors[x].w,thisHere.actors[x].h);	
+								ctx.drawImage(thisHere.actors[x].sprite.resource,thisHere.actors[x].sprite.srcx,thisHere.actors[x].sprite.srcy,thisHere.actors[x].sprite.w,thisHere.actors[x].sprite.h,thisHere.translateX,thisHere.translateY,thisHere.actors[x].sprite.w,thisHere.actors[x].sprite.h);	
 								
 								//ctx.drawImage(thisHere.actors[x].sprite.resource,thisHere.actors[x].sprite.srcx,thisHere.actors[x].sprite.srcy,thisHere.actors[x].sprite.w,thisHere.actors[x].sprite.h,thisHere.actors[x].x,thisHere.actors[x].y,thisHere.actors[x].w,thisHere.actors[x].h);
 							}
@@ -378,14 +379,26 @@
 						this.sprite.srcy = (this.staticFrameY - 1) * this.h;		
 					}
 				}
-				this.playAnimation = function(action,animationResource,staticFrameGetX,staticFrameGetY){
+				this.playAnimation = function(action,animationResource,staticFrameGetX,staticFrameGetY,w,h,addx,addy){
+
+
+					if(w){
+						this.sprite.w = w;
+					}
+					if(h){
+						this.sprite.h = h;
+
+					}
 
 					this.staticFrameX = staticFrameGetX;
 					this.staticFrameY = staticFrameGetY;
-					this.sprite.srcy = (this.staticFrameY - 1) * this.h;
+					
+					this.sprite.srcy = (addy) ? ((this.staticFrameY - 1) * this.h) + addy : (this.staticFrameY - 1) * this.h;
+					
+
 					if(this.animationX<animationResource[action].length){
 
-						this.sprite.srcx = (animationResource[action][this.animationX] - 1) * this.w;
+						this.sprite.srcx = (addx) ? ((animationResource[action][this.animationX] - 1) * this.w) + addx : (animationResource[action][this.animationX] - 1) * this.w;
 
 						this.animationX++;
 					}else{
@@ -586,7 +599,6 @@
 			var cm = new camera();
 			var st = new stage();
 			var menust = new stage();
-			var chimneySprite = new sprite();
 			var marioSprite = new sprite();
 			var enemySprite = new sprite();
 			var marioIconSprite = new sprite();
@@ -631,6 +643,43 @@
 				init();
 				
 
+				/*
+				<img id="mario" src="images/mario2.png" height=100 width=100 style="display:none;" />
+		<img id="enemy" src="images/character_sprites.png" height=100 width=100 style="display:none;" />
+		<!--
+		<img id="tileMap" src="images/map_sprites.png" height=100 width=100 style="display:none;" /> -->
+		<img id="chimney" src="images/chimney.png" height=100 width=100 style="display:none;" />
+		<img id="buttons" src="images/buttons.png" height=100 width=100 style="display:none;" />
+		<img id="marioIcon" src="images/mario-icon.png" height=100 width=100 style="display:none;" />
+		<img id="coins" src="images/coinsprite.png" height=100 width=100 style="display:none;" />
+		<img id="tileMap" src="images/main_tiles.png" height=100 width=100 style="display:none;" />
+				*/
+
+				var resources = [];
+				var paths = ['images/mario2.png','images/character_sprites.png','images/buttons.png','images/mario-icon.png','images/coinsprite.png','images/main_tiles.png'];
+
+				var loaded = 0;
+				for(var x=0;x<paths.length;x++){
+
+				  var imageObj = new Image();
+			      imageObj.onload = function() {
+			        resources.push(imageObj)
+			        loaded++;
+			      };
+			      imageObj.src = paths[x];
+				}
+				var complete = 0;
+				var tttt = setInterval(function(){
+					if(loaded!=6){
+						console.log('loading resources...');
+					}else{
+						complete = 1;
+						console.log('Done loading resources');
+						clearInterval(tttt);
+					}
+
+				},100);
+
 				tileMap = {
 					data: [[4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4],
 						   [4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4],
@@ -662,17 +711,6 @@
 					h: 48,
 					w: 48
 				};
-
-			
-				chimneySprite.init({
-					resource: document.getElementById('chimney'),
-					srcx: 0,
-					srcy: 0,
-					destx: 0,
-					desty: 0,
-					h: 152,
-					w: 143
-				});
 
 				marioIconSprite.init({
 					resource: document.getElementById('marioIcon'),
@@ -712,7 +750,7 @@
 					srcy: 0,
 					destx: 0,
 					desty: 0,
-					h: 44,
+					h: 41,
 					w: 28
 				});
 
@@ -748,21 +786,12 @@
 				});
 
 
-				var chimneySecondActor = new actor();
-				chimneySecondActor.init({
-					sprite: chimneySprite,
-					x: 500,
-					y: 300,
-					h: 143,
-					w: 152,
-					name: 'chimney-second'
-				});
+				
 
 				var buttonStartSprite = new sprite();
 				var buttonCreditSprite = new sprite();
 				var buttonShareSprite = new sprite();
 				var buttonBackSprite = new sprite();
-
 
 				buttonStartSprite.init({
 					resource: document.getElementById('buttons'),
@@ -1027,8 +1056,8 @@
 							if(runMarioBotTrigger==0){
 								if(counter==0){
 									if(direction[whatDirection]=='up'){
-
-										st.actors['mario'].playAnimation('walk_up',marioAnimation,1,3.77);
+										st.actors['mario'].playAnimation('walk_up',marioAnimation,1,3.81,28,40,0,2);
+										//st.actors['mario'].playAnimation('walk_up',marioAnimation,1,3.77);
 										if(st.actors['mario'].y>=0){
 				     						st.actors['mario'].y-=marioSpeed;	
 				     					}
@@ -1211,6 +1240,8 @@
 						runTimer(st);
 						if(keyEvents.keydown==false){
 							st.actors['mario'].tt = 1;
+							st.actors['mario'].sprite.w = 28;
+							st.actors['mario'].sprite.h = 41;
 							st.actors['mario'].stopAnimation();
 
 						}
@@ -1298,7 +1329,7 @@
 	     					if(keyEvents.up==true){
 	     						if(st.actors['mario'].tt%1==0){
 	     							st.actors['mario'].tt = 1;
-		     						st.actors['mario'].playAnimation('walk_up',marioAnimation,1,3.77);
+		     						st.actors['mario'].playAnimation('walk_up',marioAnimation,1,3.81,28,40,0,2);
 
 		     						if(st.actors['mario'].y>=0){
 		     							st.actors['mario'].y-=marioSpeed;	
@@ -1442,7 +1473,6 @@
 		<img id="mario" src="images/mario2.png" height=100 width=100 style="display:none;" />
 		<img id="enemy" src="images/character_sprites.png" height=100 width=100 style="display:none;" />
 		<!--
-
 		<img id="tileMap" src="images/map_sprites.png" height=100 width=100 style="display:none;" /> -->
 		<img id="chimney" src="images/chimney.png" height=100 width=100 style="display:none;" />
 		<img id="buttons" src="images/buttons.png" height=100 width=100 style="display:none;" />
