@@ -82,13 +82,24 @@
 				offsetMinY: 0
 			}
 
-			/*
+			
+			var gameOverAudio = document.createElement('audio');
+			gameOverAudio.controls = true;
+			gameOverAudio.src = 'audio/gameover.mp3';
+			gameOverAudio.loop = false;
+
+
+			var mainBackgroundAudio = document.createElement('audio');
+			mainBackgroundAudio.controls = true;
+			mainBackgroundAudio.src = 'audio/happy.mp3';
+			mainBackgroundAudio.loop = true;
+
+
 			var coinAudio = document.createElement('audio');
 			coinAudio.controls = true;
-			coinAudio.src = 'audio/coinSoundSample.mp3';
-			coinAudio.loop = '';
-	
-			*/
+			coinAudio.src = 'audio/coin.mp3';
+			coinAudio.loop = false;
+
 
 			var camera = function(){
 				this.x = 0;
@@ -838,7 +849,7 @@
 				buttonBackActor.init({
 					sprite: buttonBackSprite,
 					x: 150,
-					y: 400,
+					y: 250,
 					h: 136,
 					w: 637,
 					stay: 1,
@@ -957,7 +968,7 @@
 					//addCoinSprites();
 					st.addText({name: 'game-over-name',value: 'GAME OVER',x: 100,y:100,fillStyle: 'white',font: '400 100px Segoe Print'});
 					st.addText({name: 'game-over-score-name',value: 'Your score: ' +appendedScore,x:120,y:200,fillStyle: 'white'});
-					st.addActor(buttonShareActor);
+					//st.addActor(buttonShareActor);
 					st.addActor(buttonBackActor);
 					appendedScore = 0;
 				}
@@ -1108,14 +1119,17 @@
 
 
 				function gameOverScene(){
+					/*
 					st.actors['button-share'].setOnClickListener(function(){
      					//shareFacebookScore();
      					//alert('SHARE....');
      				},8,75);
+					*/
+					
 
      				st.actors['button-back'].setOnClickListener(function(){
      					st.clear();
-
+     					mainBackgroundAudio.play();
      					st.setScene(menuScene,initMenu);
      					runMarioBotTrigger = 0;
      					runEnemyBotTrigger = 1;
@@ -1166,7 +1180,8 @@
 
      				for(var x=0;x<coinActors.length;x++){
      					if(st.actors['coin-'+x] && st.actors['mario'].collide(st.actors['coin-'+x])){
-     						//coinAudio.play();
+     						coinAudio.load();
+     						coinAudio.play();
      						st.remove('coin-'+x);
 
      					}	
@@ -1230,6 +1245,9 @@
 						st.actors['mario'].tt = 1;
 						*/
 						//runMarioBotTrigger = 1;
+						mainBackgroundAudio.pause();
+						gameOverAudio.load();
+						gameOverAudio.play();
 						st.setScene(gameOverScene,initGameOver);
 						runMarioBot();
 						runEnemyBotTrigger = 1;
@@ -1284,7 +1302,9 @@
 
 							for(var x=0;x<coinActors.length;x++){
 		     					if(st.actors['coin-'+x] && st.actors['mario'].collide(st.actors['coin-'+x])){
-		     						//coinAudio.play();
+		     						coinAudio.load();
+
+		     						coinAudio.play();
 		     						score++;
 		     						appendedScore++;
 		     						coinRemaining--;
@@ -1461,6 +1481,7 @@
 				});
 
 				var firstTime = 0;
+				mainBackgroundAudio.play();
 				st.setScene(menuScene,initMenu);
 
 				//assuming mario is already initialized.
