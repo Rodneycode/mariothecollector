@@ -4,6 +4,7 @@
 		<meta property="og:image" content="https://mariothecollector.herokuapp.com/images/mario-icon.png" />
 		<script type="text/javascript">
 		  
+		  
 		  window.fbAsyncInit = function() {
 		    FB.init({
 		      appId      : '337599526622883',
@@ -987,17 +988,124 @@
 					
 					if(runEnemyBotTrigger==0){
 						var direction = ['','up','down','left','right'];
-						var duration = [1000,1000,2000,3000,4000];
+						var duration = [1000,1000,100,3000,4000];
 						var whatDirection,whatDuration;
-						whatDirection = Math.floor((Math.random() * (direction.length)) + 1);
-						whatDuration = Math.floor((Math.random() * (duration.length)) + 1);
-						var counter = 0;
+						whatDuration = 2;
+						var differenceX = 0;
+						var differenceY = 0;
+						if(st.actors['enemy'].x<st.actors['mario'].x){
 
+							//check first the difference of y
+							if(st.actors['enemy'].y>st.actors['mario'].y){
+								differenceY = st.actors['enemy'].y - st.actors['mario'].y;
+								if(differenceY<=100){
+									if(differenceY<=10){
+										whatDirection = 4;
+									}else{
+										whatDirection = 1;
+									}
+									
+								}else{
+
+									differenceX = st.actors['mario'].x - st.actors['enemy'].x;
+
+									if(differenceX<=10){
+										console.log('up2');
+										whatDirection = 1;
+									}else{
+										console.log('here1');
+										whatDirection = 4;	
+									}
+
+											
+								}
+							}else if(st.actors['enemy'].y<st.actors['mario'].y){
+								differenceY =  st.actors['mario'].y - st.actors['enemy'].y;
+								if(differenceY<=100){
+									if(differenceY<=10){
+										whatDirection = 4;
+									}else{
+										whatDirection = 2;	
+									}
+									
+									
+								}else{
+									differenceX = st.actors['mario'].x - st.actors['enemy'].x;
+									if(differenceX<=10){
+										console.log('down2');
+										whatDirection = 2;
+									}else{
+										console.log('here2');
+										whatDirection = 4;
+									}
+								}
+							}
+
+							
+						}else if(st.actors['enemy'].x>st.actors['mario'].x){
+
+							//check first the difference of y
+							if(st.actors['enemy'].y>st.actors['mario'].y){
+								differenceY = st.actors['enemy'].y - st.actors['mario'].y;
+								if(differenceY<=100){
+									if(differenceY<=10){
+										whatDirection = 3;
+									}else{
+										whatDirection = 1;	
+									}
+									
+								}else{
+
+									differenceX = st.actors['enemy'].x - st.actors['mario'].x;
+									if(differenceX<=10){
+										console.log('up4');
+										whatDirection = 1;
+									}else{
+										whatDirection = 3;	
+									}
+
+
+										
+								}
+							}else if(st.actors['enemy'].y<st.actors['mario'].y){
+								differenceY =  st.actors['mario'].y - st.actors['enemy'].y;
+								if(differenceY<=100){
+									if(differenceY<=10){
+										whatDirection = 3;
+									}else{
+										whatDirection = 2;	
+									}
+									
+								}else{
+									differenceX = st.actors['enemy'].x - st.actors['mario'].x;
+									if(differenceX<=10){
+										console.log('down4');
+										whatDirection = 2;
+									}else{
+										whatDirection = 3;	
+									}
+								}
+							}
+
+
+							
+						}else if(st.actors['enemy'].x==st.actors['mario'].x){
+							if(st.actors['enemy'].y<st.actors['mario'].y){
+								console.log('downlast');
+								whatDirection = 2;
+							}else if(st.actors['enemy'].y>st.actors['mario'].y){
+								console.log('uplast');
+								whatDirection = 1;
+							}
+						}
+						//whatDirection = Math.floor((Math.random() * (direction.length)) + 1);
+						
+						//whatDuration = Math.floor((Math.random() * (duration.length)) + 1);
+						
+						var counter = 0;
 						var t = setInterval(function(){
 							if(runEnemyBotTrigger==0){
 								if(counter==0){
-
-									
 									if(direction[whatDirection]=='up'){
 										st.actors['enemy'].playAnimation('walk_up',enemyAnimation,1,4);
 										if(st.actors['enemy'].y>=0){
@@ -1214,6 +1322,8 @@
 						gameOver = 0;*/
 						st.clear();
 
+
+						
 						
 						FB.api('/me', function(response) {
 							if(response!=''){
@@ -1225,6 +1335,7 @@
 
 
 						FB.api('/me/feed', 'post', {message: 'Oh! I got a score of '+appendedScore+' in Mario the Collector Game! https://apps.facebook.com/337599526622883' + ' Please play this awesome game!'});
+
 						
 						coinLimits = 4;
 						coinRemainingOriginal = 4;
@@ -1279,7 +1390,8 @@
 								level++;
 								//enemySpeed+=1.5;
 
-								if(level==5){
+								if(level==2){
+
 
 									st.addActor(enemyActor);
 									runEnemyBotTrigger= 0;
