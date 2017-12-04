@@ -2,7 +2,24 @@
 <html>
 	<head>
 		<script type="text/javascript">
-		  
+			
+			var cointt = 0;
+
+			console.log(10%10);
+
+			(function repeat(cointtget){
+
+				if(cointtget%10==0){
+					cointtget++;
+					console.log(cointtget);
+					repeat(cointtget);
+				}else{
+					cointtget = 0;
+					console.log(cointtget);
+				}
+			})(cointt);
+
+			/*  
 		  window.fbAsyncInit = function() {
 		    FB.init({
 		      appId      : '337599526622883',
@@ -18,11 +35,12 @@
 		     js = d.createElement(s); js.id = id;
 		     js.src = "//connect.facebook.net/en_US/sdk.js";
 		     fjs.parentNode.insertBefore(js, fjs);
-		   }(document, 'script', 'facebook-jssdk'));
+		   }(document, 'script', 'facebook-jssdk')); */
 		</script>
 
 		<script type="text/javascript">
 
+		/*
 		  window.addEventListener('load',function(){
 		  	FB.getLoginStatus(function(response) {
 		    	if(response.status!='connected'){
@@ -46,7 +64,7 @@
 				}
 			});
 
-		  });
+		  });*/
 
 		</script>
 

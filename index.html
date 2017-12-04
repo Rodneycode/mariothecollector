@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<link rel="stylesheet" href="custom.css" type="text/css" />
 		<meta property="og:image" content="https://mariothecollector.herokuapp.com/images/mario-icon.png" />
 		<script type="text/javascript">
 		  
@@ -360,6 +361,7 @@
 				this.setOnClickListener = function(cb,minusx,minusy){
 					
 					if(keyEvents.mousedown==true){
+						cb();
 						
 						var translateX = keyEvents.screenx-minusx;
 						var translateY = keyEvents.screeny-minusy;
@@ -399,7 +401,6 @@
 					}
 					if(h){
 						this.sprite.h = h;
-
 					}
 
 					this.staticFrameX = staticFrameGetX;
@@ -1612,7 +1613,13 @@
 		<img id="marioIcon" src="images/mario-icon.png" height=100 width=100 style="display:none;" />
 		<img id="coins" src="images/coinsprite.png" height=100 width=100 style="display:none;" />
 		<img id="tileMap" src="images/main_tiles.png" height=100 width=100 style="display:none;" />
-		<canvas id="main-screen" height=600 width=900>
-		</canvas>
+
+		<div class="wrapper">
+		  <div class="container">
+		    <div class="canvas-container">
+		      <canvas id="main-screen" width="900" height="600"></canvas>
+		    </div>
+		  </div>
+		</div>
 	</body>
 </html>
